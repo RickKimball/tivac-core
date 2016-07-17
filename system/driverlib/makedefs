@@ -94,7 +94,7 @@ FPU=
 else
 ifeq (${VARIANT}, cm4f)
 CPU=-mcpu=cortex-m4
-FPU=-mfpu=fpv4-sp-d16 -mfloat-abi=hard
+FPU=-mfpu=fpv4-sp-d16 -mfloat-abi=hard -mslow-flash-data -fsingle-precision-constant
 else
 $(error Unknown processor variant ${VARIANT}!)
 endif
