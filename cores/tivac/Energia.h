@@ -296,6 +296,10 @@ unsigned long micros();
 unsigned long millis();
 void timerInit();
 void registerSysTickCb(void (*userFunc)(uint32_t));
+
+// Implemented in hook.c or user code
+void yield(void);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
@@ -322,9 +326,11 @@ long random(long, long);
 void randomSeed(unsigned int);
 long map(long, long, long, long, long);
 
+
 #endif
 
 #include "pins_energia.h"
+
 
 #endif
 

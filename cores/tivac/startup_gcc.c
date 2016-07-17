@@ -546,7 +546,7 @@ caddr_t _sbrk (int incr)
     static char * heap_end;
     char * prev_heap_end;
 
-    if (heap_end == NULL) {
+    if (heap_end == 0) {
         heap_end = &end; /* first ram address after bss and data */
     }
 
@@ -563,66 +563,3 @@ caddr_t _sbrk (int incr)
     }
 }
 
-__attribute__((weak))
-extern int link( char *cOld, char *cNew )
-{
-    return -1 ;
-}
-
-__attribute__((weak))
-extern int _close( int file )
-{
-    return -1 ;
-}
-
-__attribute__((weak))
-extern int _fstat( int file, struct stat *st )
-{
-    st->st_mode = S_IFCHR ;
-
-    return 0 ;
-}
-
-__attribute__((weak))
-extern int _isatty( int file )
-{
-    return 1 ;
-}
-
-__attribute__((weak))
-extern int _lseek( int file, int ptr, int dir )
-{
-    return 0 ;
-}
-
-__attribute__((weak))
-extern int _read(int file, char *ptr, int len)
-{
-    return 0 ;
-}
-
-__attribute__((weak))
-extern int _write( int file, char *ptr, int len )
-{
-    return len;
-}
-
-__attribute__((weak))
-extern void _kill( int pid, int sig )
-{
-    return ;
-}
-
-__attribute__((weak))
-extern int _getpid ( void )
-{
-    return -1 ;
-}
-
-/*
-__attribute__((weak))
-extern void _exit (void)
-{
-
-}
-*/

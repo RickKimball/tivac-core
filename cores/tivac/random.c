@@ -83,7 +83,7 @@ random(void)
 }
 
 void
-srandom(unsigned long seed)
+srandom(unsigned seed)
 {
     next = seed;
 }

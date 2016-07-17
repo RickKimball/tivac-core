@@ -90,26 +90,42 @@ unsigned long millis(void)
 
 void delayMicroseconds(unsigned int us)
 {
-	// Systick timer rolls over every 1000000/SYSTICKHZ microseconds 
-	if (us > (1000000UL / SYSTICKHZ - 1)) {
-		delay(us / 1000);  // delay milliseconds
-		us = us % 1000;     // handle remainder of delay
-	};
+    // Systick timer rolls over every 1000000/SYSTICKHZ microseconds 
+    if (us > (1000000UL / SYSTICKHZ - 1)) {
+        delay(us / 1000);  // delay milliseconds
+        us = us % 1000;     // handle remainder of delay
+    };
 
-	// 24 bit timer - mask off undefined bits
-	unsigned long startTime = HWREG(NVIC_ST_CURRENT) & NVIC_ST_CURRENT_M;
+    // 24 bit timer - mask off undefined bits
+    unsigned long startTime = HWREG(NVIC_ST_CURRENT) & NVIC_ST_CURRENT_M;
 
-	unsigned long ticks = (unsigned long)us * (F_CPU/1000000UL);
-	volatile unsigned long elapsedTime;
+    unsigned long ticks = (unsigned long)us * (F_CPU/1000000UL);
+    volatile unsigned long elapsedTime;
 
-	if (ticks > startTime) {
-		ticks = (ticks + (NVIC_ST_CURRENT_M - (unsigned long)F_CPU / SYSTICKHZ)) & NVIC_ST_CURRENT_M;
-	}
+    if (ticks > startTime) {
+        ticks = (ticks + (NVIC_ST_CURRENT_M - (unsigned long)F_CPU / SYSTICKHZ)) & NVIC_ST_CURRENT_M;
+    }
 
-	do {
-		elapsedTime = (startTime-(HWREG(NVIC_ST_CURRENT) & NVIC_ST_CURRENT_M )) & NVIC_ST_CURRENT_M;
-	} while(elapsedTime <= ticks);
+    do {
+        elapsedTime = (startTime-(HWREG(NVIC_ST_CURRENT) & NVIC_ST_CURRENT_M )) & NVIC_ST_CURRENT_M;
+    } while(elapsedTime <= ticks);
 }
+
+#if 1
+
+#define GetTickCount millis
+
+void delay( uint32_t ms )
+{
+    if (ms == 0)
+        return;
+    uint32_t start = GetTickCount();
+    do {
+        yield();
+    } while (GetTickCount() - start < ms);
+}
+
+#else
 
 void delay(uint32_t millis)
 {
@@ -118,7 +134,7 @@ void delay(uint32_t millis)
 		delayMicroseconds(500);
 	}
 }
-
+#endif
 
 volatile boolean stay_asleep = false;
 
