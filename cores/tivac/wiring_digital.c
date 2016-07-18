@@ -32,6 +32,7 @@
 #define ARDUINO_MAIN
 #include "wiring_private.h"
 #include "driverlib/rom.h"
+#include "driverlib/rom_map.h"
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
 #define GPIO_LOCK_KEY_DD        0x4C4F434B 
@@ -53,7 +54,7 @@ void pinMode(uint8_t pin, uint8_t mode)
         *cr |= bit;
         *lock = 0;
         ROM_GPIODirModeSet(portBase, bit, GPIO_DIR_MODE_IN);
-        ROM_GPIOPadConfigSet(portBase, bit,
+        MAP_GPIOPadConfigSet(portBase, bit,
                      GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
         *cr &= ~bit;
     } else if (mode == INPUT_PULLDOWN) {
@@ -61,7 +62,7 @@ void pinMode(uint8_t pin, uint8_t mode)
         *cr |= bit;
         *lock = 0;
         ROM_GPIODirModeSet(portBase, bit, GPIO_DIR_MODE_IN);
-        ROM_GPIOPadConfigSet(portBase, bit,
+        MAP_GPIOPadConfigSet(portBase, bit,
                      GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPD);
         *cr &= ~bit;
     } else {//mode == OUTPUT
