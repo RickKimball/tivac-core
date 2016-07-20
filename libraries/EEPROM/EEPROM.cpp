@@ -23,6 +23,7 @@
 
 #include "Energia.h"
 #include "driverlib/eeprom.h"
+#include "driverlib/rom_map.h"
 #include "EEPROM.h"
 
 /******************************************************************************
@@ -47,7 +48,7 @@ uint8_t EEPROMClass::read(int address)
 	//int word = (address / BYTES_PER_WORD) % WORDS_PER_BLOCK;
 	uint32_t wordVal = 0;
 
-	ROM_EEPROMRead(&wordVal, byteAddr, 4);
+	MAP_EEPROMRead(&wordVal, byteAddr, 4);
 	wordVal = wordVal >> (8*(address % BYTES_PER_WORD));
 
 	return (uint8_t) wordVal;
@@ -58,11 +59,11 @@ void EEPROMClass::write(int address, uint8_t value)
 	uint32_t byteAddr = address - (address % BYTES_PER_WORD);
 
 	uint32_t wordVal = 0;
-	ROM_EEPROMRead(&wordVal, byteAddr, 4);
+	MAP_EEPROMRead(&wordVal, byteAddr, 4);
 	wordVal &= ~(0xFF << (8*(address % BYTES_PER_WORD)));
 	wordVal += value << (8*(address % BYTES_PER_WORD));
 
-	ROM_EEPROMProgram(&wordVal, byteAddr, 4);
+	EEPROMProgram(&wordVal, byteAddr, 4);
 }
 
 void EEPROMClass::update(int address, uint8_t value)
