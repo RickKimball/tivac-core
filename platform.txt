@@ -91,8 +91,15 @@ recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
 # utzig's lm4flash
 tools.lm4flash.upload.params.verbose=
 tools.lm4flash.upload.params.quiet=
-tools.lm4flash.path={runtime.tools.lm4flash.path}
-tools.lm4flash.cmd.path={runtime.platform.path}/tools/bin/
+tools.lm4flash.path={runtime.platform.path}/tools/bin/
 tools.lm4flash.cmd=lm4flash
-tools.lm4flash.upload.pattern={cmd.path}{cmd} "{build.path}/{build.project_name}.bin"
+tools.lm4flash.upload.pattern={path}{cmd} "{build.path}/{build.project_name}.bin"
 
+# openocd
+tools.openocd.upload.params.verbose=
+tools.openocd.upload.params.quiet=
+tools.openocd.path={runtime.tools.lm4flash.path}
+tools.openocd.cmd.path=
+tools.openocd.cmd=openocd
+tools.openocd.cmd.windows=openocd.exe
+tools.openocd.upload.pattern={cmd.path}{cmd} -f "{upload.openocd_config}" -c 'telnet_port disabled; init; reset halt; flash write_image erase "{build.path}/{build.project_name}.elf"; exit'
