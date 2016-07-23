@@ -14,6 +14,7 @@
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/eeprom.h"
+#include "dwt_timer.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,6 +27,7 @@ void _init(void)
 			EEPROMMassErase();
 	}
 
+	dwt_init();
 	timerInit();
 
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);

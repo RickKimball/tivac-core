@@ -35,6 +35,7 @@
 #include "driverlib/rom_map.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/timer.h"
+#include "dwt_timer.h"
 
 static void (*SysTickCbFuncs[8])(uint32_t ui32TimeMS);
 
@@ -65,7 +66,7 @@ void timerInit()
 #endif
 
     //
-    //  SysTick is used for delay() and delayMicroseconds()
+    //  SysTick is used for delay()
     //
 
     MAP_SysTickPeriodSet(F_CPU / SYSTICKHZ);
@@ -90,51 +91,19 @@ unsigned long millis(void)
 
 void delayMicroseconds(unsigned int us)
 {
-    // Systick timer rolls over every 1000000/SYSTICKHZ microseconds 
-    if (us > (1000000UL / SYSTICKHZ - 1)) {
-        delay(us / 1000);  // delay milliseconds
-        us = us % 1000;     // handle remainder of delay
-    };
-
-    // 24 bit timer - mask off undefined bits
-    unsigned long startTime = HWREG(NVIC_ST_CURRENT) & NVIC_ST_CURRENT_M;
-
-    unsigned long ticks = (unsigned long)us * (F_CPU/1000000UL);
-    volatile unsigned long elapsedTime;
-
-    if (ticks > startTime) {
-        ticks = (ticks + (NVIC_ST_CURRENT_M - (unsigned long)F_CPU / SYSTICKHZ)) & NVIC_ST_CURRENT_M;
-    }
-
-    do {
-        elapsedTime = (startTime-(HWREG(NVIC_ST_CURRENT) & NVIC_ST_CURRENT_M )) & NVIC_ST_CURRENT_M;
-    } while(elapsedTime <= ticks);
+    dwt_delay_cycles(usec2cycles(us));
 }
-
-#if 1
-
-#define GetTickCount millis
 
 void delay( uint32_t ms )
 {
     if (ms == 0)
         return;
-    uint32_t start = GetTickCount();
+
+    uint32_t start = millis();
     do {
         yield();
-    } while (GetTickCount() - start < ms);
+    } while (millis() - start < ms);
 }
-
-#else
-
-void delay(uint32_t millis)
-{
-	unsigned long i;
-	for(i=0; i<millis*2; i++){
-		delayMicroseconds(500);
-	}
-}
-#endif
 
 volatile boolean stay_asleep = false;
 
