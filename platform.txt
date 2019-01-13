@@ -102,4 +102,4 @@ tools.openocd.path={runtime.tools.lm4flash.path}
 tools.openocd.cmd.path=
 tools.openocd.cmd=openocd
 tools.openocd.cmd.windows=openocd.exe
-tools.openocd.upload.pattern={cmd.path}{cmd} -f "{upload.openocd_config}" -c 'telnet_port disabled; init; reset halt; flash write_image erase "{build.path}/{build.project_name}.elf"; exit'
+tools.openocd.upload.pattern={cmd.path}{cmd} -f "{upload.openocd_config}" -c 'telnet_port disabled; init; reset halt; flash write_image erase "{build.path}/{build.project_name}.elf"; reset run; exit'
